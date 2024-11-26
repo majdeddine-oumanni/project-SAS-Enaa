@@ -51,10 +51,6 @@ void create(struct task tasks[],int count){
 }
 
 void read(struct task tasks[],int count){
-    if(count == 0){
-        printf("Aucune tâche à afficher.\n");
-        return;
-    }
      for(int i =0; i<count; i++){
         printf("\n---Tache %d---\n", i+1);
         printf("Titre       : %s\n", tasks[i].titre);
@@ -217,8 +213,7 @@ int main()
                 printf("\n Enter countation: ");
                 scanf("%d", &count);
                 //checking if number of task user wants to input isn't bigger than MAX_tache of tasks
-                if(count<MAX_tache){
-                    getchar();
+                if(count<=MAX_tache){
                     create(tasks, count);
                 }else{
                     printf("\nError: Invalid number of tasks. Please enter a value between 1 and %d.\n", MAX_tache);
@@ -229,7 +224,7 @@ int main()
                 if(count){
                     read(tasks, count);
                 }else{
-                    printf("you didn't assign anything yet\n");
+                    printf("You didn't assign anything yet\n");
                 }
                 break;
             case 3:
@@ -254,7 +249,7 @@ int main()
 
 
     if (ptask == NULL) {
-        printf("Error opening file for writing.\n");
+        printf("Error opening a file.\n");
         return 1;
     }
 
