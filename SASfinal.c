@@ -23,21 +23,36 @@ void create(struct task tasks[],int count){
     for(int i=0; i<count; i++){
         printf("\ntache : %d\n", i+1);
         printf("Entrez le titre de la tache : ");
-        fgets(tasks[i].titre, sizeof(tasks[i].titre), stdin);
-        tasks[i].titre[strcspn(tasks[i].titre, "\n")] = '\0';
-
+        scanf("%[^\n]", tasks[i].titre);
+        getchar();
 
         printf("Entre la description de tache : ");
-        fgets(tasks[i].description, sizeof(tasks[i].description), stdin);
-        tasks[i].description[strcspn(tasks[i].description, "\n")] = '\0';
-
-        printf("Entrez le jour : ");
-        scanf("%d", &tasks[i].task_date.day);
-        printf("entrez le moi : ");
-        scanf("%d", &tasks[i].task_date.month);
-        printf("entrez l'annee : ");
-        scanf("%d", &tasks[i].task_date.year);
+        scanf("%[^\n]", tasks[i].description);
         getchar();
+
+        while(1){
+            printf("Entrez le jour : ");
+            scanf("%d", &tasks[i].task_date.day);
+            getchar();
+            if(tasks[i].task_date.day<=0 || tasks[i].task_date.day > 31){
+                printf("invalid day number \n");
+            }
+            printf("entrez le moi : ");
+            scanf("%d", &tasks[i].task_date.month);
+            getchar();
+            if(tasks[i].task_date.month<=0 || tasks[i].task_date.month > 12){
+                printf("invalid month number \n");
+            }
+            printf("entrez l'annee : ");
+            scanf("%d", &tasks[i].task_date.year);
+            getchar();
+            if(tasks[i].task_date.year<1000 || tasks[i].task_date.day > 2100){
+                printf("invalid year number \n");
+            }else{
+                break;
+            }
+
+        }
 
         printf("Entrez la priorite (high/low) : ");
         scanf("%s", tasks[i].priority);
@@ -49,7 +64,7 @@ void create(struct task tasks[],int count){
     }
 
 }
-
+//function read() shows the data of the task
 void read(struct task tasks[],int count){
      for(int i =0; i<count; i++){
         printf("\n---Tache %d---\n", i+1);
@@ -68,20 +83,22 @@ void update(struct task tasks[], int count) {
 
     printf("Entrez le numero de la tache a modifier (1-%d) : ", count);
     scanf("%d", &task_num);
-    getchar(); // Consommer le caractère de nouvelle ligne restant
+    getchar(); // Consume the remaining newline character
 
     if (task_num < 1 || task_num > count) {
         printf("Numéro de tâche invalide.\n");
         return;
     }
 
-    task_num--; // Ajuster l'index de la tâche (commence à 0)
+    task_num--; // Adjusting the index of the task (starts at 0)
 
     printf("Modifier le titre de la tache : ");
-    fgets(tasks[task_num].titre, sizeof(tasks[task_num].titre), stdin);
+    scanf("%[^\n]" ,tasks[task_num].titre);
+    getchar();
 
     printf("Modifier la description de la tache : ");
-    fgets(tasks[task_num].description, sizeof(tasks[task_num].description), stdin);
+    scanf("%[^\n]", tasks[task_num].description);
+    getchar();
 
     printf("Modifier le jour : ");
     scanf("%d", &tasks[task_num].task_date.day);
@@ -103,19 +120,17 @@ void update(struct task tasks[], int count) {
     printf("modifier le status (complet/incomplet)");
     scanf("%s", tasks[task_num].status);
 
-    printf("Tâche modifiée avec succès.\n");
+    printf("Tache modifiee avec succes.\n");
 }
-
-
 
 //function for deleting a task from the array
 void Delete(struct task tasks[], int *count){
     int choice;
-    printf("\nEntrez le numero de la personne a supprimer (1 à %d): ", *count);
+    printf("\nEntrez le numero de la tache a supprime (1 a %d): ", *count);
     scanf("%d", &choice);
     getchar();
     if(choice > 0 && choice <= *count){
-        choice -= 1; //number of tasks starts with 1 but inside the array starts with 0
+        choice -= 1; // Ajusting the index of the task (starts at 0)
         for(int i=choice; i<*count-1; i++){
             tasks[i] = tasks[i+1];
         }
@@ -126,7 +141,8 @@ void Delete(struct task tasks[], int *count){
     }
 }
 
-void filter(struct task tasks[], int count) {
+//function filters using the priority of the task
+void priorityFilter(struct task tasks[], int count) {
     char choice[10];
     printf("\nEntrez la priorite (high/low) pour filtrer : ");
     scanf("%s", choice);
@@ -155,6 +171,7 @@ void filter(struct task tasks[], int count) {
     }
 }
 
+//function filters using the status of the task
 void statusFilter(struct task tasks[], int count){
     char choice[20];
     printf("\nEntrez le status (complet/incomplet) pour filtrer : ");
@@ -178,14 +195,14 @@ void statusFilter(struct task tasks[], int count){
             printf("---------------------------\n");
             found = 1;
         }
-        
+
     }
     if (!found)
     {
         printf("Aucune tache ne correspond a cette priorite.\n");
     }
-    
-    
+
+
 }
 
 int main()
@@ -212,6 +229,7 @@ int main()
             case 1:
                 printf("\n Enter countation: ");
                 scanf("%d", &count);
+                getchar();
                 //checking if number of task user wants to input isn't bigger than MAX_tache of tasks
                 if(count<=MAX_tache){
                     create(tasks, count);
@@ -234,7 +252,7 @@ int main()
                 Delete(tasks, &count);
                 break;
             case 5:
-                filter(tasks, count);
+                priorityFilter(tasks, count);
                 break;
             case 6:
                 statusFilter(tasks, count);
@@ -252,7 +270,6 @@ int main()
         printf("Error opening a file.\n");
         return 1;
     }
-
     // Writing data to the file
     for (int i = 0; i < count; i++) {
         fprintf(ptask, "\n---Tache %d---\n", i + 1);
@@ -266,6 +283,5 @@ int main()
 
     //closing the file
     fclose(ptask);
-
     return 0;
 }
